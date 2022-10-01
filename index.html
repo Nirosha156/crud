@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Java Script Crud Operations</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!--    link style file-->
+    <link rel="stylesheet/scss" href="assets/scss/style.scss" type="text/css">
+
+    <style>
+        body {
+            font-family: 'Lily Script One', cursive !important;
+            /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; */
+        }
+
+        button.edit_btn {
+            color: #fff;
+            border: none;
+            background: #1abc9c;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: 'Lily Script One', cursive !important;
+        }
+
+        .nodata {
+            text-align: center;
+            padding: 46px;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* table style */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14%;
+        }
+
+        /* Zebra striping */
+        tr:nth-of-type(odd) {
+            background: #eee;
+        }
+
+        th {
+            background: #1abc9c;
+            color: white;
+            font-weight: bold;
+        }
+
+        td,
+        th {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        /* form style */
+        @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+        @import url(https://fonts.googleapis.com/css?family=Lily+Script+One);
+
+        body {
+            margin: 0;
+            font-family: arial, tahoma, sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            direction: ltr;
+            background: white;
+        }
+
+        form {
+            margin: 18% auto 0 auto;
+            padding: 0px;
+            width: 318px;
+            height: auto;
+            overflow: hidden;
+            background: white;
+            border-radius: 10px;
+        }
+
+        form label {
+            font-size: 14px;
+            color: darkgray;
+            cursor: pointer;
+        }
+
+        form input {
+            font-family: 'Lily Script One', cursive !important;
+            margin: 15px 0;
+            padding: 12px 22px;
+            width: 100%;
+            outline: none;
+            border: 1px solid #bbb;
+            border-radius: 20px;
+            display: inline-block;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-transition: 0.2s ease all;
+            -moz-transition: 0.2s ease all;
+            -ms-transition: 0.2s ease all;
+            -o-transition: 0.2s ease all;
+            transition: 0.2s ease all;
+        }
+
+        form input[type=text]:focus,
+        form input[type="number"]:focus {
+            border-color: cornflowerblue;
+        }
+
+        input[type=submit] {
+            padding: 15px 50px;
+            width: auto;
+            background: #1abc9c;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            float: right;
+            clear: right;
+            -webkit-transition: 0.2s ease all;
+            -moz-transition: 0.2s ease all;
+            -ms-transition: 0.2s ease all;
+            -o-transition: 0.2s ease all;
+            transition: 0.2s ease all;
+        }
+
+        button.reset {
+            padding: 15px 50px;
+            width: auto;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            -webkit-transition: 0.2s ease all;
+            -moz-transition: 0.2s ease all;
+            -ms-transition: 0.2s ease all;
+            -o-transition: 0.2s ease all;
+            transition: 0.2s ease all;
+            border-radius: 20px;
+        }
+
+        button.reset:hover {
+            background: red;
+            color: #fff;
+        }
+
+        input[type=submit]:hover {
+            opacity: 0.8;
+        }
+
+        input[type="submit"]:active {
+            opacity: 0.4;
+        }
+
+        #header {
+            margin: 0 auto;
+            width: 200px;
+            font-family: 'Lily Script One', cursive;
+            font-size: 33px;
+            font-weight: bold;
+            text-align: center;
+            color: lightgray;
+            -webkit-transition: 0.2s ease all;
+            -moz-transition: 0.2s ease all;
+            -ms-transition: 0.2s ease all;
+            -o-transition: 0.2s ease all;
+            transition: 0.2s ease all;
+        }
+
+        input#clickMe {
+            cursor: pointer;
+            width: 50%;
+            background: #1abc9c;
+            color: #fff;
+        }
+
+        input#clickMe:hover {
+            color: #fff;
+            background-color: #5fc1d1;
+        }
+
+        #header:hover {
+            color: cornflowerblue;
+        }
+
+        /* error msg  */
+        .info-msg,
+.success-msg,
+.error-msg {
+    margin: 10px 14px;
+    padding: 10px;
+    border-radius: 3px 3px 3px 3px;
+    position: absolute;
+    right: 0;
+}
+.error-msg {
+  color: #D8000C;
+  background-color: #FFBABA;
+}
+.success-msg {
+  color: #270;
+  background-color: #DFF2BF;
+}
+    </style>
+</head>
+
+<body onload="get_list()">
+    <div style="display: flex;;margin: 0 64px;">
+        <div style="width: 40%">
+            <form id="formid">
+                <h3 id="header">Your Details</h3>
+                <input type="text" placeholder="Your Name" id="name" />
+                <input type="text" placeholder="Your Phone Number" maxlength="10" id="phoneno" oninput="check_alpha()"/>
+                <input type="text" placeholder="Your Email" id="email" />
+                <button type="reset" class="reset">
+                    Clear
+                </button>
+                <input id="clickMe" type="button" value="Submit" onClick="submitForm();"/>
+
+            </form>
+        </div>
+        <div style="width: 60%;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Email ID</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+        <div id="msg">
+
+        </div>
+        
+    </div>
+    <script>
+        // List API 
+        set_table = []
+        var set_id = ''
+        function get_list() {
+            edit_id = 0
+            const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/listDetail";
+            const xhr = new XMLHttpRequest
+            xhr.open("POST", api_url)
+            xhr.send()
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    set_table = []
+                    $('#tbody').empty().append()
+                    const data = JSON.parse(xhr.response)
+                    set_table = data
+                    var content = '';
+                    if (data.length > 0) {
+                        for (var i = 0; i < set_table.length; i++) {
+                            let sno = i + 1
+                            content += '<tr>';
+                            content += '<td style="text-align:center;">' + sno + '</td>';
+                            content += '<td>' + set_table[i].name + '</td>';
+                            content += '<td>' + set_table[i].phoneno + '</td>';
+                            content += '<td>' + set_table[i].email + '</td>';
+                            content += `<td style="text-align:center;"> <button class="edit_btn" onClick="edit_item(${set_table[i].id})">
+                                <i class="fa fa-pencil" title="Edit"></i>
+                                </button> </td>`;
+                            content += `<td style="text-align:center;"> <button class="edit_btn" onClick="delete_item(${set_table[i].id})">
+                                <i class="fa fa-times-circle" title="Delete">
+                                    </i></button> </td>`;
+                            content += '</tr>';
+                        }
+                        $('#tbody').append(content);
+                    } else {
+                        content += '<tr>';
+                        content += '<td colspan="6" class="nodata">' + "No Data Available" + '</td>';
+                        content += '<tr>';
+                        $('#tbody').append(content);
+                    }
+                }
+            }
+        }
+        var edit_id = 0
+        // check email validation
+        function ValidateEmail(input) {
+            var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            if (input.match(validRegex)) {
+                return true;
+            } else {
+                document.getElementById("msg").innerHTML = `<div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            Invalid Mail ID!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+            }, "6000")
+                return false;
+            }
+
+        }
+        
+        function check_alpha(){// number validation
+            document.getElementById("msg").innerHTML = ""
+           var input = document.getElementById("phoneno").value;
+            if(input.match(/[a-z]/i)){
+                document.getElementById("msg").innerHTML = `<div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            Only Number Format!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+            }, "6000")
+            $("#phoneno").val("")
+            }
+        }
+        function submitForm() {//Form validation
+            const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/addDetail";
+            var reqdata = { "id": edit_id, "name": $("#name").val(), "phoneno": $("#phoneno").val(), "email": $("#email").val() }
+            if (reqdata.name == "" || reqdata.phoneno == "" || reqdata.email == "") { //validation checking
+                document.getElementById("msg").innerHTML = `<div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            Form is Invalid!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+            }, "6000")
+            } else {
+                var check_val = ValidateEmail(reqdata.email) //mail validation function calling
+                if (check_val) {
+                    post(api_url, reqdata); // save API function calling after success the validation
+                }
+            }
+        }
+
+        function post(url, data) { // save API
+            let xhr = new XMLHttpRequest
+            xhr.open("POST", url);
+
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.send(JSON.stringify(data));
+            var msg = "Added"
+             if(edit_id != 0){
+                msg = "Updated"
+             }
+                document.getElementById("msg").innerHTML = `<div class="success-msg">
+            <i class="fa fa-times-circle"></i>
+            ${msg}!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+            }, "6000")
+            $("#name").val("")
+            $("#email").val("")
+            $("#phoneno").val("")
+            setTimeout(() => {
+                get_list()
+            }, "50")
+        }
+
+        //  GET Method
+        //Edit function
+        function edit_item(id) {
+            const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/getDetail/" + id;
+            const xhr = new XMLHttpRequest
+            xhr.open("GET", api_url)
+            xhr.send()
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.response)
+                    $("#name").val(data.name)
+                    $("#email").val(data.email)
+                    $("#phoneno").val(data.phoneno)
+                    edit_id = data.id
+                }
+            }
+        }
+
+        function delete_item(id) {
+            const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/deleteDetail/" + id;
+            const xhr = new XMLHttpRequest
+            xhr.open("GET", api_url)
+            xhr.send()
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    setTimeout(() => {
+                        get_list()
+                    }, "50")
+                }
+            }
+            document.getElementById("msg").innerHTML = `<div class="success-msg">
+            <i class="fa fa-times-circle"></i>
+            Deleted!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+            }, "6000")
+            $("#name").val("")
+            $("#email").val("")
+            $("#phoneno").val("")
+        }
+    </script>
+</body>
+
+</html>

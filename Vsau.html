@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--------------------link------------------>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="Vasu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body onload="get_list()">
+    <div class="container-fluid niro">
+        <form id="formid"> 
+            <h3> Simple HTML Page</h3>
+            <input type="text" placeholder="Name" id="Name">        
+            <input type="text" placeholder="Phone Number" maxlength="10" id="PhoneNo" oninput="check_alpha()">        
+            <input type="text" placeholder="Your Email" id="Email">
+            <button type="reset" class="reset" id="button">Clear</button> 
+            <button class="sucess-btn" id="button" onclick="submitForm()">Clear</button> 
+            <input id="clickMe" type="submit" value="Submit" /> 
+        </form>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Email ID</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+        <div id="msg">
+
+        </div>
+    </div>
+    <script>
+       // List API 
+    set_table=[]
+    set_id=""
+      function get_list() {
+        edit_id=0
+        const api_url="http://13.234.64.82:8080/STUDENT_MGMT/student/listDetail";
+        const niro = new XMLHttpRequest
+        niro.open("POST",api_url)
+        niro.send()
+        niro.onload=function(){
+            if (niro.status===200) {
+                set_table=[]
+                $('#tbody').empty().append()
+                const data=JSON.parse(niro.response)
+                set_table=data
+                var details='';
+            if (data.length > 0 ) {
+                for (let i = 0; i < set_table.length; i++) {
+                 let sno = i+1;
+                    details += '<tr>';
+                    details +='<td>'+ sno + '</td>';
+                    details += '<td>'+ set_table.Name + '</td>';
+                    details += '<td>'+ set_table.PhoneNo + '</td>';
+                    details += '<td>'+ set_table.Email + '</td>';
+                    details += `<td style="text-align:center;"> <button class="edit_btn" onClick="edit_item(${set_table[i].id})">
+                                <i class="fa fa-pencil" title="Edit"></i>
+                                </button> </td>`;
+                    details += `<td style="text-align:center;"> <button class="edit_btn" onClick="delete_item(${set_table[i].id})">
+                                <i class="fa fa-times-circle" title="Delete">
+                                    </i></button> </td>`;
+                    details += '</tr>';
+                        }
+
+                        $('#tbody').append(details);
+                } else{
+                    details  += '<tr>';
+                    details  += '<td colspan="6">' + "No Data Available" + '</td>';
+                    details  += '</tr>';
+                    $('#tbody').append(details);
+                }
+             }
+         }         
+     }
+            var edit_id = 0
+            // check email validation
+                function ValidateEmail(input) {
+                    var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                    if (input.match(validRegex)) {
+                        return true
+                    } else{
+                        document.getElementById('msg').innerHTML = `<div class="error-msg">
+                            <i class="fa fa-times-circle"></i>
+                            Invalid Mail ID!
+                            </div>`;
+         setTimeout(()=>{
+            document.getElementById("msg").innerHTML = ""
+         }, "10000")
+         return false;
+        }
+    }
+    //number validation
+    function check_alpha() {
+        document.getElementById("msg").innerHTML=""
+        var input = document.getElementById("PhoneNo").value;
+        if (input.match(/[a-z]/i)) {
+            document.getElementById("msg").innerHTML = `<div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            Only Number Format!
+          </div>`;
+        setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+        }, "10000");
+        $("#PhoneNo").val("")
+        }
+    }
+    // form validation
+function submitForm() {
+    const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/addDetail";
+    var reqdata ={
+        "id":edit_id,
+        "Name":$("#Name").val(),
+        "PhoneNo":$("#PhoneNo").val(),
+        "Email":$("#Email").val(),
+    }
+
+    if (reqdata.Name ==""|| reqdata.PhoneNo ==""|| reqdata.Email =="") {
+document.getElementById("msg").innerHTML =  `<div class="error-msg">
+            <i class="fa fa-times-circle"></i>
+            Form is Invalid!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML =""
+          }, 10000);
+    }
+    else{
+        var check_val = ValidateEmail(reqdata.Email)
+        if (check_val) {
+            let send_data = "id="+edit_id + "&Name=" + reqdata.Name + "&PhoneNo=" + reqdata.PhoneNo + "&Email=" + reqdata.Email
+            post(api_url,send_data);
+
+        }
+    } 
+}
+function post(url, data) {
+    let niro = new XMLHttpRequest
+    niro.open("POST", url);
+    niro.setRequestHeader("Content-Type","application/json");
+    niro.send(JSON.stringify(data));
+    var msg = "Added"
+    if (edit_id !=0) {
+        msg = "Updated"   
+    }
+    document.getElementById("msg").innerHTML = `<div class="success-msg">
+            <i class="fa fa-times-circle"></i>
+            ${msg}!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+          }, "10000");
+          $("#Name").val("")
+          $("#PhoneNo").val("")
+          $("#Email").val("")
+          setTimeout(() => {
+            get_list()
+          }, "50")
+}
+
+//get & edit
+function edit_item(id) {
+    const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/getDetail/" + id;
+    const niro = new XMLHttpRequest
+    niro.open("GET", api_url)
+    niro.send()
+    niro.onload = function () {
+        if (niro.status===200) {
+            const data = JSON.parse(niro.response)
+            $("#Name").val(data.name)
+            $("#PhoneNo").val(data.PhoneNo)
+            $("#Email").val(data.Email)
+          edit_id = data.id  
+
+        }   
+        
+    }
+}
+function delete_item(id) {
+    const api_url = "http://13.234.64.82:8080/STUDENT_MGMT/student/deleteDetail/" + id;
+    const niro = new XMLHttpRequest
+    niro.open("GET", api_url)
+    niro.send()
+    niro.onload = function () {
+        if (niro.status === 200) {
+            setTimeout(() => {
+                
+            }, "50");
+            
+        }
+        
+    }
+    document.getElementById("msg").innerHTML = `<div class="success-msg">
+            <i class="fa fa-times-circle"></i>
+            Deleted!
+          </div>`;
+          setTimeout(() => {
+            document.getElementById("msg").innerHTML = ""
+          }, "10000");
+          $("#Name").val("")
+          $("#PhoneNo").val("")
+          $("Email").val("")
+}
+
+    </script>
+
+</body>
+</html>
